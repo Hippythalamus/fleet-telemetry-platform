@@ -8,11 +8,14 @@ authors = [
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
+    "fastapi>=0.136.1",
     "requests>=2.34.2",
+    "uvicorn>=0.47.0",
 ]
 
 [dependency-groups]
 dev = [
+    "black>=26.5.0",
     "mypy>=2.1.0",
     "pytest>=9.0.3",
     "ruff>=0.15.13",
