@@ -10,7 +10,7 @@ def json_searilazion():
 
     json_str = json.dumps(packet_small)
 
-    print(json_str) 
+    print(json_str)
 
     new_str = json.loads(json_str)
 
