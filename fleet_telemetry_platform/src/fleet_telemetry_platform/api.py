@@ -12,6 +12,10 @@ from fleet_telemetry_platform.models import (
     TelemetryCreateResponse,
 )
 from fleet_telemetry_platform.telemetry import telemetry_stream
+from fleet_telemetry_platform.orm_database import (
+    insert_telemetry,
+    get_all_telemetry,
+)
 
 app = FastAPI()
 
@@ -30,11 +34,19 @@ def create_robot(robot: RobotCreateRequest) -> RobotCreateResponse:
     )
 
 
-@app.post("/telemetry/save", response_model=TelemetryCreateResponse)
-def save_telemetry(robot: TelemetryCreateRequest) -> TelemetryCreateResponse:
-    return TelemetryCreateResponse(
-        message="Robot's telemetry was saved successfully", robot_id=robot.robot_id
+@app.post("/telemetry")
+def create_telemetry(
+    telemetry: TelemetryCreateRequest,
+):
+    insert_telemetry(
+        robot_id=telemetry.robot_id,
+        battery=telemetry.battery,
+        temperature=telemetry.temperature,
     )
+
+    return {
+        "message": "Telemetry saved"
+    }
 
 
 @app.get("/telemetry/latest", response_model=TelemetryResponse)
@@ -57,17 +69,9 @@ def latest_status() -> list[RobotStatus]:
     ]
 
 
-@app.get("/telemetry/history", response_model=list[TelemetryHistoryItem])
-def telemetry_history() -> list[TelemetryHistoryItem]:
-    return [
-        TelemetryHistoryItem(
-            robot_id="robot_1", temperature=42.1, timestamp=time.time(), battery=84.5
-        ),
-        TelemetryHistoryItem(
-            robot_id="robot_2", timestamp=time.time(), temperature=43.5, battery=12.5
-        ),
-    ]
-
+@app.get("/telemetry/history")
+def telemetry_history():
+    return get_all_telemetry()
 
 @app.get("/hello")
 def hello(name: str) -> dict[str, str]:
